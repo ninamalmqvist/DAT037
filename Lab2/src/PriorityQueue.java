@@ -19,11 +19,7 @@ public class PriorityQueue<E> {
 	// Adds an item to the priority queue.
 	public void add(E x){
 		heap.add(x);
-		// If add x smaller/bigger than parent swift up (sell/buy)
-		//if(comparator.compare(x,heap.get(parent(heap.size()-1)))>0){
-			siftUp(heap.size()); // -1?
-		//}
-		//throw new UnsupportedOperationException();
+		siftUp(heap.size()); 
 	}
 
 	// Returns the smallest item in the priority queue.
@@ -46,11 +42,12 @@ public class PriorityQueue<E> {
 		if (heap.size() > 0) siftDown(0);
 	}
 	
-	
+	// update new bid
 	public void update(E x){
 		Bid xBid = (Bid) x;
 		int bidIndex = indexOfName(xBid.name);
-		if(bidIndex<0) return;
+		
+		if(bidIndex<0) return; // if there is no old bid, do nothing
 		if(heap.size() == 1){
 			deleteMinimum();
 			add(x);
@@ -61,14 +58,13 @@ public class PriorityQueue<E> {
 			heap.set(bidIndex, x);
 			siftDown(bidIndex);
 		}
-		else if(comparator.compare(x,heap.get(parent(bidIndex)))>=0){
+		else{
 			heap.set(bidIndex, x);
 			siftUp(bidIndex+1);
 		}
-		else return;
 	}
 	
-	private int indexOfName(String x){ // linear search, not the best...
+	private int indexOfName(String x){
 		for(int i = 0; i<heap.size();i++){
 				Bid bidOnPos = (Bid) heap.get(i);
 				if(x.equals(bidOnPos.name)) return i;
@@ -84,6 +80,7 @@ public class PriorityQueue<E> {
 		E value;
 		E parentValue;
 		int parentIndex;
+		// stop at the root
 		while (index>0) { 
 			parentValue = heap.get(parent(index));
 			value = heap.get(index);
@@ -93,7 +90,6 @@ public class PriorityQueue<E> {
 				heap.set(index, parentValue);
 				heap.set(parentIndex, value);
 			}
-			else break;
 			value = parentValue;
 			index = parentIndex; 
 		}
